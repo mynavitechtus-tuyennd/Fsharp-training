@@ -32,10 +32,9 @@ open Azure.Search.Documents.Indexes
 let defineIndex () =
     let fields = [|
         SimpleField("id", SearchFieldDataType.String, IsKey = true, IsFilterable = true)
-        SearchableField("content", SearchFieldDataType.String, IsSearchable = true, AnalyzerName = "en.lucene")
+        SearchableField("content", IsSearchable = true, AnalyzerName = "en.lucene")
         SimpleField("category", SearchFieldDataType.String, IsFilterable = true, IsFacetable = true)
         SimpleField("price", SearchFieldDataType.Double, IsFilterable = true, IsSortable = true)
-        SimpleField("embedding", SearchFieldDataType.Collection(SearchFieldDataType.Single), VectorDimensions = 128)
     |]
 
     SearchIndex("products", fields)
