@@ -1,7 +1,7 @@
 ## 3. Query dữ liệu: bọc kết quả thành Async sequence
 Trong .NET SDK, query trả về một `FeedIterator<T>`. Để xử lý chuẩn phong cách F#, ta thường viết một hàm đệ quy bất đồng bộ hoặc sử dụng IAsyncEnumerable (taskSeq) để "trải phẳng" (flatten) các trang kết quả.
 Đây chính là cách chúng ta có thể lấy tất cả kết quả từ một query mà không phải lo lắng về việc quản lý trang (pagination) thủ công. Dưới đây là một ví dụ về cách làm điều này
-Nó giống với việc sử dụng vòng lặp white để lấy tất cả kết quả từ một iterator, nhưng ở đây chúng ta sử dụng đệ quy bất đồng bộ để đạt được điều tương tự trong F#. 
+Nó giống với việc sử dụng vòng lặp while để lấy tất cả kết quả từ một iterator, nhưng ở đây chúng ta sử dụng đệ quy bất đồng bộ để đạt được điều tương tự trong F#. 
 
 ```fsharp
 
@@ -53,12 +53,12 @@ open Microsoft.Azure.Cosmos
 open Microsoft.Azure.Functions.Worker
 open Microsoft.Extensions.Logging
 
-type CosmosChangeFeedFunction(logger: ILogger) =
+type CosmosChangeFeedFunction(logger: ILogger<CosmosChangeFeedFunction>) =
 
     [<Function("CosmosChangeFeedFunction")>]
      member _.Run ([<CosmosDBTrigger(
+            "ShopDB"
             "Orders",
-            "ShopDB",
             Connection = "CosmosDBConnection",
             LeaseContainerName = "leases",
             CreateLeaseContainerIfNotExists = true
