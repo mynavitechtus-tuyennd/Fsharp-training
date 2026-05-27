@@ -24,8 +24,8 @@ Trong Cosmos DB, khả năng mở rộng ngang (horizontal scaling) hoạt độ
 **Cách khởi tạo `CosmosClient`:**
 ```fsharp
 open Microsoft.Azure.Cosmos
-    let options = CosmosClientOptions(ConnectionMode = ConnectionMode.Direct)
-    let cosmosClient = new CosmosClient("<connection-string>", options)
+let options = CosmosClientOptions(ConnectionMode = ConnectionMode.Direct)
+let cosmosClient = new CosmosClient("<connection-string>", options)
 
 let container = cosmosClient.GetContainer("<database-name>", "<container-name>")
 ```
@@ -41,10 +41,10 @@ type User = {
 }
 
 // 1. CREATE (Tạo mới)
-let createUser (container: Container) (user: User) : Task =
+let createUser (container: Container) (user: User) =
     task {
         let! response = container.CreateItemAsync(user, new PartitionKey(user.id))
-        printfn "Created user with id: %s, RU consumed: %d" user.id response.RequestCharge
+        printfn "Created user with id: %s, RU consumed: %.2f" user.id response.RequestCharge
     }
 
 // 2. READ (Đọc chính xác theo ID và PartitionKey - Nhanh nhất)
@@ -64,7 +64,7 @@ let updateUser (container: Container) (user: User) : Task =
 // 4. PATCH (Cập nhật một phần tài liệu)
 let patchUser (container: Container) (id: string) (partitionKey: string) : Task =
     task {
-        let patchOperations = [ PatchOperation.Replace("/age", 30) ]
+        let patchOperations = ResizeArray [ PatchOperation.Replace("/age", 30) ]
         let! response = container.PatchItemAsync<User>(id, new PartitionKey(partitionKey), patchOperations)
         printfn "Patched user with id: %s, RU consumed: %d" id response.RequestCharge
     }
